@@ -73,12 +73,12 @@ function get (options, callback) {
   simpleGet.concat({
     url: uri,
     json: true
-  }, function (error, response, project) {
+  }, function (error, response, data) {
     if (error) return callback(error)
     // Validate the resource.
-    if (!tv4.validate(project, schemas[schemaName])) {
+    if (!tv4.validate(data, schemas[schemaName])) {
       return callback(new Error('invalid ' + schemaName + ' object'))
     }
-    return callback(null, project)
+    return callback(null, data)
   })
 }
