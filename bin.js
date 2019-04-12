@@ -4,7 +4,7 @@ if (process.argv.length < 3) {
   process.exit(1)
 }
 
-require('./')({uri: process.argv[2]}, function (error, data) {
+require('./')({ uri: process.argv[2] }, function (error, data) {
   if (error) {
     process.stderr.write(error.toString() + '\n')
     process.exit(1)
