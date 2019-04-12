@@ -10,7 +10,7 @@ getSustainability({
   assert.ifError(error)
   assert.strictEqual(
     data.project,
-    'https://github.com/kemitchell/get-sustainability.js'
+    'https://github.com/kemitchell/get-sustainability.json'
   )
   assert.strictEqual(
     data.contributors[0].name,
