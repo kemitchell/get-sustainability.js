@@ -20,11 +20,13 @@
   },
   "devDependencies": {
     "defence-cli": "^2.0.1",
+    "licensee": "^7.0.1",
     "replace-require-self": "^1.1.1",
     "standard": "^12.0.1",
     "standard-markdown": "^5.0.1"
   },
   "scripts": {
+    "licenses": "licensee --errors-only",
     "lint": "standard && standard-markdown README.md",
     "test": "defence -i javascript README.md | replace-require-self | node"
   }
