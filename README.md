@@ -1,5 +1,7 @@
 download fully resolved [sustainability data](https://www.npmjs.com/package/sustainability-schema)
 
+JavaScript:
+
 ```javascript
 var getSustainability = require('get-sustainability')
 var assert = require('assert')
@@ -17,4 +19,10 @@ getSustainability({
     'Kyle E. Mitchell'
   )
 })
+```
+
+Command Line:
+
+```shellsession
+$ npx get-sustainability "$URI"
 ```
