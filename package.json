@@ -1,0 +1,21 @@
+{
+  "name": "get-sustainability",
+  "version": "0.0.0",
+  "description": "download fully resolved sustainability data",
+  "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
+  "repository": "kemitchell/get-sustainability.js",
+  "license": "BlueOak-1.0.0",
+  "files": [
+    "README.md",
+    "LICENSE.md",
+    "index.js",
+    "bin.js"
+  ],
+  "bin": "bin.js",
+  "dependencies": {
+    "run-parallel-limit": "^1.0.5",
+    "simple-get": "^3.0.3",
+    "sustainability-schema": "^1.0.0-beta.3",
+    "tv4": "^1.3.0"
+  }
+}
