@@ -1,7 +1,8 @@
 var assert = require('assert')
+var http = require('http')
+var https = require('https')
 var runParallelLimit = require('run-parallel-limit')
 var schema = require('sustainability-schema')
-var simpleGet = require('simple-get')
 var tv4 = require('tv4')
 var url = require('url')
 
@@ -65,20 +66,40 @@ function get (options, callback) {
   // Ensure that we support the URI's protocol.
   var parsed = url.parse(uri)
   var protocol = parsed.protocol
-  if (protocol !== 'https:' && protocol !== 'http:') {
+  var client
+  if (protocol === 'https:') client = https
+  else if (protocol === 'http:') client = http
+  else {
     return callback(new Error('unsupported protocol: ' + protocol))
   }
 
   // Get the resource.
-  simpleGet.concat({
-    url: uri,
-    json: true
-  }, function (error, response, data) {
-    if (error) return callback(error)
-    // Validate the resource.
-    if (!tv4.validate(data, schemas[schemaName])) {
-      return callback(new Error('invalid ' + schemaName + ' object'))
+  client.get(uri, function (response) {
+    var statusCode = response.statusCode
+    if (statusCode !== 200) {
+      return callback(new Error(uri + ' responsed ' + statusCode))
     }
-    return callback(null, data)
+    var chunks = []
+    response
+      .on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      .once('error', function (error) {
+        return callback(error)
+      })
+      .once('end', function () {
+        var body = Buffer.concat(chunks)
+        var data
+        try {
+          data = JSON.parse(body)
+        } catch (error) {
+          return callback(error)
+        }
+        // Validate the resource.
+        if (!tv4.validate(data, schemas[schemaName])) {
+          return callback(new Error('invalid ' + schemaName + ' object'))
+        }
+        return callback(null, data)
+      })
   })
 }
