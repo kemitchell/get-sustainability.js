@@ -6,10 +6,14 @@ var assert = require('assert')
 
 getSustainability({
   uri: 'https://raw.githubusercontent.com/kemitchell/get-sustainability.js/master/sustainability.json'
-}, function (error, project) {
+}, function (error, data) {
   assert.ifError(error)
   assert.strictEqual(
-    project.contributors[0].name,
+    data.project,
+    'https://github.com/kemitchell/get-sustainability.js'
+  )
+  assert.strictEqual(
+    data.contributors[0].name,
     'Kyle E. Mitchell'
   )
 })
