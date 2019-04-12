@@ -17,5 +17,12 @@
     "simple-get": "^3.0.3",
     "sustainability-schema": "^1.0.0-beta.3",
     "tv4": "^1.3.0"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1",
+    "standard-markdown": "^5.0.1"
+  },
+  "scripts": {
+    "lint": "standard && standard-markdown README.md"
   }
 }
