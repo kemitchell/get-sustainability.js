@@ -5,6 +5,7 @@
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "repository": "kemitchell/get-sustainability.js",
   "license": "BlueOak-1.0.0",
+  "sustainability": "https://raw.githubusercontent.com/kemitchell/get-sustainability.js/master/sustainability.json",
   "files": [
     "README.md",
     "LICENSE.md",
