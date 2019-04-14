@@ -21,10 +21,15 @@ module.exports = function (options, callback) {
   assert.strictEqual(typeof limit, 'number', 'limit option must be a number')
   assert(Number.isInteger(limit), 'limit option must be an integer')
   assert(limit > 0, 'limit options must be greater than 0')
+  var redirects = options.redirects || 1
+  assert.strictEqual(typeof redirects, 'number', 'redirects option must be a number')
+  assert(Number.isInteger(redirects), 'redirects option must be an integer')
+  assert(redirects > 0, 'redirects options must be greater than 0')
 
   get({
     uri: uri,
-    schemaName: 'project'
+    schemaName: 'project',
+    redirects: redirects
   }, function (error, project) {
     if (error) return callback(error)
     // The `contributors` array may contain references to endpoints for
@@ -62,6 +67,9 @@ function get (options, callback) {
   var schemaName = options.schemaName
   assert.strictEqual(typeof schemaName, 'string', 'schemaName option must be a string')
   assert(schemas.hasOwnProperty(schemaName), 'schemaName must be known schema')
+  var redirects = options.redirects || 1
+  assert(Number.isInteger(redirects), 'redirects option must be an integer')
+  assert(redirects >= 0, 'redirects options must be greater than or equal to 0')
 
   // Ensure that we support the URI's protocol.
   var parsed = url.parse(uri)
@@ -76,6 +84,24 @@ function get (options, callback) {
   // Get the resource.
   client.get(uri, function (response) {
     var statusCode = response.statusCode
+    if (
+      (
+        statusCode === 301 ||
+        statusCode === 302 ||
+        statusCode === 303 ||
+        statusCode === 307 ||
+        statusCode === 308
+      ) &&
+      response.headers['Location'] &&
+      redirects > 0
+    ) {
+      var recurseOptions = {
+        uri: uri,
+        schemaName: schemaName,
+        redirects: redirects - 1
+      }
+      return get(recurseOptions, callback)
+    }
     if (statusCode !== 200) {
       return callback(new Error(uri + ' responsed ' + statusCode))
     }
