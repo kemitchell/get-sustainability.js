@@ -103,7 +103,7 @@ function get (options, callback) {
       return get(recurseOptions, callback)
     }
     if (statusCode !== 200) {
-      return callback(new Error(uri + ' responsed ' + statusCode))
+      return callback(new Error(uri + ' responded ' + statusCode))
     }
     var chunks = []
     response
