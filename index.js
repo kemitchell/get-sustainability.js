@@ -1,10 +1,11 @@
 var assert = require('assert')
+var has = require('has')
 var http = require('http')
 var https = require('https')
+var parseURL = require('url-parse')
 var runParallelLimit = require('run-parallel-limit')
 var schema = require('sustainability-schema')
 var tv4 = require('tv4')
-var url = require('url')
 
 var schemas = {
   project: schema.definitions.project,
@@ -38,7 +39,7 @@ module.exports = function (options, callback) {
     runParallelLimit(
       project.contributors.map(function (element) {
         return function (done) {
-          if (element.hasOwnProperty('name')) {
+          if (has(element, 'name')) {
             return done(null, element)
           }
           get({
@@ -66,13 +67,13 @@ function get (options, callback) {
   assert(typeof uri === 'string', 'uri option must be a string')
   var schemaName = options.schemaName
   assert(typeof schemaName === 'string', 'schemaName option must be a string')
-  assert(schemas.hasOwnProperty(schemaName), 'schemaName must be known schema')
+  assert(has(schemas, schemaName), 'schemaName must be known schema')
   var redirects = options.redirects || 1
   assert(Number.isInteger(redirects), 'redirects option must be an integer')
   assert(redirects >= 0, 'redirects options must be greater than or equal to 0')
 
   // Ensure that we support the URI's protocol.
-  var parsed = url.parse(uri)
+  var parsed = parseURL(uri)
   var protocol = parsed.protocol
   var client
   if (protocol === 'https:') client = https
@@ -92,7 +93,7 @@ function get (options, callback) {
         statusCode === 307 ||
         statusCode === 308
       ) &&
-      response.headers['Location'] &&
+      response.headers.Location &&
       redirects > 0
     ) {
       var recurseOptions = {
