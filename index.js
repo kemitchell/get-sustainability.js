@@ -1,3 +1,4 @@
+var Ajv = require('ajv')
 var assert = require('assert')
 var has = require('has')
 var http = require('http')
@@ -5,11 +6,12 @@ var https = require('https')
 var parseURL = require('url-parse')
 var runParallelLimit = require('run-parallel-limit')
 var schema = require('sustainability-schema')
-var tv4 = require('tv4')
 
-var schemas = {
-  project: schema.definitions.project,
-  contributor: schema.definitions.contributor
+var ajv = new Ajv()
+
+var validate = {
+  project: ajv.compile(schema),
+  contributor: ajv.compile(schema.definitions.contributor)
 }
 
 module.exports = function (options, callback) {
@@ -67,7 +69,7 @@ function get (options, callback) {
   assert(typeof uri === 'string', 'uri option must be a string')
   var schemaName = options.schemaName
   assert(typeof schemaName === 'string', 'schemaName option must be a string')
-  assert(has(schemas, schemaName), 'schemaName must be known schema')
+  assert(schemaName === 'project' || schemaName === 'contributor', 'schemaName must be known schema')
   var redirects = options.redirects || 1
   assert(Number.isInteger(redirects), 'redirects option must be an integer')
   assert(redirects >= 0, 'redirects options must be greater than or equal to 0')
@@ -123,7 +125,7 @@ function get (options, callback) {
           return callback(error)
         }
         // Validate the resource.
-        if (!tv4.validate(data, schemas[schemaName])) {
+        if (!validate[schemaName](data)) {
           return callback(new Error('invalid ' + schemaName + ' object'))
         }
         return callback(null, data)
